@@ -36,25 +36,68 @@ public class ListNodeServiceUnitTests
     [Fact]
     public void MergeTwoListNodes_WhenGivenTwoListNodes_ReturnsOneOrderedListNode()
     {
+        //Arrange
+        var listNode1 = new ListNode(3, new ListNode(2, new ListNode(4)));
+        var listNode2 = new ListNode(1, new ListNode(4, new ListNode(3)));
 
+        //Act
+        var result = _listNodeService.MergeTwoListNodes(listNode1, listNode2);
+
+        //Assert
+        Assert.False(ListIsNotOrdered(result));
     }
 
     [Fact]
     public void MergeTwoListNodes_WhenFirstListNodeNull_ReturnsSecondList()
     {
+        //Arrange
+        var listNode2 = new ListNode(1, new ListNode(4, new ListNode(3)));
 
+        //Act
+        var result = _listNodeService.MergeTwoListNodes(null, listNode2);
+
+        //Assert
+        Assert.Equal(result, listNode2);
     }
 
     [Fact]
     public void MergeTwoListNodes_WhenSecondListNodeNull_ReturnsFirstList()
     {
+        //Arrange
+        var listNode1 = new ListNode(1, new ListNode(4, new ListNode(3)));
 
+        //Act
+        var result = _listNodeService.MergeTwoListNodes(listNode1, null);
+
+        //Assert
+        Assert.Equal(result, listNode1);
     }
 
     [Fact]
     public void MergeTwoListNodes_WhenBothListNodesNull_ReturnsListNode()
     {
+        //Arrange
 
+        //Act
+        var result = _listNodeService.MergeTwoListNodes(null, null);
+
+        //Assert
+        Assert.IsType<ListNode>(result);
+    }
+
+    private bool ListIsNotOrdered(ListNode listNode) 
+    {
+        // had to invert the check rather than checking for IsOrdered due to last evaluation (int <= null) resulting in false
+        var isNotOrdered = listNode.val > listNode.next?.val;
+
+        if (isNotOrdered) return isNotOrdered;
+
+        if (listNode.next != null) 
+        {
+            isNotOrdered = ListIsNotOrdered(listNode.next);
+        }
+
+        return isNotOrdered;
     }
 
 }
